@@ -51,3 +51,26 @@ sudo curl -fL -o /etc/apt/trusted.gpg.d/zulip-desktop.asc https://download.zulip
 echo "deb https://download.zulip.com/desktop/apt stable main" | sudo tee /etc/apt/sources.list.d/zulip-desktop.list
 sudo apt update
 sudo apt install zulip
+
+### install docker
+sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
+sudo apt update
+sudo apt install ca-certificates
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+sudo systemctl status docker 
+sudo systemctl start docker
+
+sudo docker run hello-world
