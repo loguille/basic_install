@@ -38,5 +38,10 @@ export PATH=$PATH:/usr/local/go/bin
 git clone https://github.com/jesseduffield/lazygit.git
 cd lazygit
 go install
- 
 
+### Configure github 
+ssh-keygen -t ed25519 -C "loic.guille27@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+# copy the key of id_ed25519.pub on github
+ssh -T git@github.com
